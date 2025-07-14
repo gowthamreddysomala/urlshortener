@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f3f4f6;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+        .container {
+          background-color: white;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 400px;
+        }
+        h1 {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="url"] {
+          width: 100%;
+          padding: 0.5rem;
+          margin-bottom: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+        button {
+          width: 100%;
+          padding: 0.5rem;
+          background-color: #2563eb;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: #1d4ed8;
+        }
+        .link {
+          display: block;
+          text-align: center;
+          margin-top: 1rem;
+          color: #2563eb;
+          text-decoration: none;
+        }
+        .short-url {
+          margin-top: 1rem;
+          text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>URL Shortener</h1>
+    <form id="login-form">
+        <input type="name" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <a class="link" href="#" onclick="toggleForm('register')">Don't have an account? Register</a>
+    </form>
+
+    <form id="register-form" style="display:none">
+        <input type="email" id="reg-email" placeholder="Email" required>
+        <input type="password" id="reg-password" placeholder="Password" required>
+        <button type="submit">Register</button>
+        <a class="link" href="#" onclick="toggleForm('login')">Already have an account? Login</a>
+    </form>
+
+    <form id="url-form" style="display:none">
+        <input type="text   " id="long-url" placeholder="Enter URL to shorten" required>
+        <button type="submit">Shorten URL</button>
+        <div class="short-url" id="short-url-display"></div>
+        <a class="link" href="#" onclick="logout()">Logout</a>
+    </form>
+</div>
+
+<script>
+    const loginForm = document.getElementById('login-form')
+    const registerForm = document.getElementById('register-form')
+    const urlForm = document.getElementById('url-form')
+    const shortUrlDisplay = document.getElementById('short-url-display')
+
+    const API = 'http://localhost:8080/api'
+
+    function toggleForm(type) {
+      if (type === 'register') {
+        loginForm.style.display = 'none'
+        registerForm.style.display = 'block'
+      } else if (type === 'login') {
+        registerForm.style.display = 'none'
+        loginForm.style.display = 'block'
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token')
+      urlForm.style.display = 'none'
+      loginForm.style.display = 'block'
+    }
+
+    function showDashboard() {
+      loginForm.style.display = 'none'
+      registerForm.style.display = 'none'
+      urlForm.style.display = 'block'
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem('token', data.token)
+        showDashboard()
+      } else {
+        alert('Login failed')
+      }
+    })
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const email = document.getElementById('reg-email').value
+      const password = document.getElementById('reg-password').value
+
+      const res = await fetch(`${API}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        localStorage.setItem('token', data.token)
+        showDashboard()
+      } else {
+        alert('Registration failed')
+      }
+    })
+
+    urlForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const longUrl = document.getElementById('long-url').value
+      const token = localStorage.getItem('token')
+
+      const res = await fetch(`${API}/url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ originalUrl: longUrl })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        shortUrlDisplay.innerHTML = `<a href='/r/${data.shortUrl}' target='_blank'>${window.location.origin}/r/${data.shortUrl}</a>`
+      } else {
+        alert('Failed to shorten URL')
+      }
+    })
+
+    // Auto login if token exists
+    if (localStorage.getItem('token')) {
+      showDashboard()
+    }
+</script>
+</body>
+</html>
