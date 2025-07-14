@@ -7,9 +7,14 @@ import com.example.urlshortener.entity.User;
 import com.example.urlshortener.repository.UserRepository;
 import com.example.urlshortener.service.UrlService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/url")
@@ -31,4 +36,21 @@ public class UrlController {
     public String redirect(@PathVariable String shortUrl) {
         return urlService.getOriginalUrl(shortUrl);
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<UrlResponse>> getUserUrls(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        Page<Url> urls = urlService.getUserUrls(email, page, size);
+
+        List<UrlResponse> response = urls.getContent().stream()
+                .map(url -> new UrlResponse(url.getOriginalUrl(), url.getShortUrl()))
+                .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
 }

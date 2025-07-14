@@ -8,4 +8,8 @@ import lombok.Data;
 public class UrlResponse {
     private String originalUrl;
     private String shortUrl;
+
 }
+
+
+
