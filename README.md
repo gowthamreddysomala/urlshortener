@@ -80,8 +80,7 @@ Edit
 │   ├── repository/
 │   └── ...
 └── src/main/resources/static/index.html
-👤 Author
-Made with ❤️ by Gowtham Reddy
+👤 Author: Gowtham Reddy
 Feel free to connect or contribute!
 
 🛡️ License
