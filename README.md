@@ -71,6 +71,7 @@ GET	/r/{shortUrl}	Redirect to original URL
 swift
 Copy
 Edit
+|
 📦 url-shortener/
 ├── src/main/java/com/example/urlshortener/
 │   ├── controller/
@@ -80,12 +81,12 @@ Edit
 │   ├── repository/
 │   └── ...
 └── src/main/resources/static/index.html
+|
 👤 Author: Gowtham Reddy
 Feel free to connect or contribute!
 
 🛡️ License
-This project is licensed under the MIT License.
-© 2025 Gowtham Reddy. All rights reserved.
+© 2025 Gowtham Reddy. No rights reserved ( JK I made the Project my self).
 
 Simplicity, speed, and security — in one place.
 
@@ -96,5 +97,3 @@ Simplicity, speed, and security — in one place.
 - Save this content as `README.md` in your project root.
 - Replace the image URLs with real screenshots (if available).
 - Update the repo URL in the clone command.
-
-Would you like me to generate a `LICENSE` file for MIT in your name too?
