@@ -67,6 +67,100 @@ POST	/api/url	Shorten URL (authenticated)
 GET	/api/url/user	View your shortened URLs
 GET	/r/{shortUrl}	Redirect to original URL
 
++------------------------+
+|      User Visits       |
+|    index.html (UI)     |
++------------------------+
+             |
+             v
++------------------------+
+|   Choose Login/Register|
++------------------------+
+     |           |
+     v           v
++--------+   +-----------+
+| Login  |   | Register  |
++--------+   +-----------+
+     |           |
+     |  POST /api/auth/* |
+     |     (with email/pass)   
+     v           v
++------------------------+
+| Spring Boot Backend    |
+| AuthController         |
+| JwtService generates   |
+| JWT token              |
++------------------------+
+             |
+             v
++----------------------------+
+| Frontend stores JWT token |
+| in localStorage           |
++----------------------------+
+             |
+             v
++------------------------------+
+| Show URL Dashboard (form)   |
++------------------------------+
+             |
+             v
++-----------------------------+
+| User submits long URL       |
+| via form (POST /api/url)    |
++-----------------------------+
+             |
+             v
++------------------------------+
+| Backend checks JWT          |
+| → UrlService generates short|
+| code and saves to DB        |
++------------------------------+
+             |
+             v
++------------------------------+
+| Short URL returned & shown  |
+| to user (e.g. /r/abc123)    |
++------------------------------+
+             |
+             v
++----------------------------+
+| User can:                 |
+|  - Load My URLs           |
+|  - Delete URL             |
++----------------------------+
+
+     +----------------------+
+     | GET /api/url/user    |
+     | (returns paginated   |
+     |  list of URLs)       |
+     +----------------------+
+
+     +----------------------+
+     | DELETE /api/url/{id} |
+     | Validates user match |
+     | Deletes from DB      |
+     +----------------------+
+
+             |
+             v
++-----------------------------+
+| Click short URL → /r/abc123|
++-----------------------------+
+             |
+             v
++-----------------------------+
+| GET /r/{shortUrl} → Backend|
+| looks up and redirects     |
++-----------------------------+
+
+             |
+             v
++-----------------------------+
+| Done! User sees original   |
+| site or dashboard is updated|
++-----------------------------+
+
+
 📂 Project Structure
 swift
 Copy
