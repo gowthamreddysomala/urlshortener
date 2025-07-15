@@ -10,5 +10,4 @@ public class HomeController {
     public RedirectView home() {
         return new RedirectView("/index.html");
     }
-
 }

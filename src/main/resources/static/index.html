@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>URL Shortener</title>
     <style>
         :root {
@@ -11,6 +11,12 @@
           --text-color: #111827;
           --border-radius: 10px;
           --transition: 0.3s ease;
+        }
+
+        body.dark {
+          --primary-color: #38bdf8;
+          --bg-color: #0f172a;
+          --text-color: #e2e8f0;
         }
 
         * {
@@ -95,9 +101,45 @@
           margin-top: 15px;
           text-align: center;
         }
+
+        .theme-toggle {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          width: 50px;
+          height: 26px;
+          background: #ccc;
+          border-radius: 13px;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          padding: 3px;
+          transition: background 0.3s ease;
+        }
+
+        .theme-toggle::before {
+          content: '';
+          display: block;
+          width: 20px;
+          height: 20px;
+          background: white;
+          border-radius: 50%;
+          transition: transform 0.3s ease;
+        }
+
+        body.dark .theme-toggle {
+          background: #4f46e5;
+        }
+
+        body.dark .theme-toggle::before {
+          transform: translateX(24px);
+        }
     </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()"></button>
+
 <div class="card">
     <h1>URL Shortener</h1>
 
@@ -224,7 +266,10 @@
         list.innerHTML = "";
         urls.forEach((url) => {
           const item = document.createElement("li");
-          item.innerHTML = `<strong>${url.originalUrl}</strong><br><a href='/r/${url.shortUrl}' target='_blank'>${window.location.origin}/r/${url.shortUrl}</a>`;
+          item.innerHTML = `
+            <strong>${url.originalUrl}</strong><br>
+            <a href='/r/${url.shortUrl}' target='_blank'>${window.location.origin}/r/${url.shortUrl}</a><br>
+            <button onclick="deleteUrl('${url.shortUrl}')" style="margin-top:5px;background:#ef4444;color:white;border:none;padding:5px 10px;border-radius:5px;">Delete</button>`;
           list.appendChild(item);
         });
       } else {
@@ -232,10 +277,37 @@
       }
     }
 
-    // Auto login if token is present
-    if (localStorage.getItem("token")) {
-      showDashboard();
+    async function deleteUrl(shortUrl) {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/url/${shortUrl}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        loadUserUrls();
+      } else {
+        alert("Failed to delete URL");
+      }
     }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+      if (localStorage.getItem("token")) {
+        showDashboard();
+      }
+    };
 </script>
+
+<footer style="position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 0.85rem; color: #6b7280;">
+    Made with ❤️ by Gowtham Reddy
+</footer>
 </body>
 </html>

@@ -11,5 +11,4 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
     Optional<Url> findByShortUrl(String shortUrl);
     Optional<Url> findByOriginalUrl(String originalUrl);
     Page<Url> findByUserEmail(String email, Pageable pageable);
-
 }

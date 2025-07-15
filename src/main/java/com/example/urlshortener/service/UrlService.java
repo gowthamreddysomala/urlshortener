@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,4 +53,17 @@ public class UrlService {
                 .orElseThrow(() -> new RuntimeException("Short URL not found"))
                 .getOriginalUrl();
     }
+
+    public void deleteUrl(String shortUrl, String email) throws Exception {
+        Url url = urlRepository.findByShortUrl(shortUrl)
+                .orElseThrow(() -> new Exception("URL not found"));
+
+        if (!url.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        urlRepository.delete(url);
+    }
+
+
 }

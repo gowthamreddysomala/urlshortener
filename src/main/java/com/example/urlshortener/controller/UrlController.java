@@ -37,6 +37,15 @@ public class UrlController {
         return urlService.getOriginalUrl(shortUrl);
     }
 
+    @DeleteMapping("/url/{shortUrl}")
+    public ResponseEntity<Void> deleteUrl(@PathVariable String shortUrl,
+                                          @AuthenticationPrincipal UserDetails userDetails) throws Exception {
+        urlService.deleteUrl(shortUrl, userDetails.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+
+
+
     @GetMapping("/user")
     public ResponseEntity<List<UrlResponse>> getUserUrls(
             @RequestParam(defaultValue = "0") int page,
