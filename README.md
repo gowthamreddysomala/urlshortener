@@ -71,6 +71,8 @@ GET	/r/{shortUrl}	Redirect to original URL
 text
 Copy
 Edit
+
+
 +------------------------+
 |      User Visits       |
 |    index.html (UI)     |
@@ -86,20 +88,17 @@ Edit
 | Login  |   | Register  |
 +--------+   +-----------+
      |           |
-     |  POST /api/auth/* |
-     |     (with email/pass)   
+     |  POST /api/auth/* (JWT)   
      v           v
-+------------------------+
-| Spring Boot Backend    |
-| AuthController         |
-| JwtService generates   |
-| JWT token              |
-+------------------------+
++----------------------------+
+| Spring Boot Backend        |
+| AuthController + JwtService|
+| → Generate JWT             |
++----------------------------+
              |
              v
 +----------------------------+
-| Frontend stores JWT token |
-| in localStorage           |
+| Store JWT in localStorage |
 +----------------------------+
              |
              v
@@ -110,60 +109,48 @@ Edit
              v
 +-----------------------------+
 | User submits long URL       |
-| via form (POST /api/url)    |
+| via POST /api/url           |
 +-----------------------------+
              |
              v
 +------------------------------+
-| Backend checks JWT          |
-| → UrlService generates short|
-| code and saves to DB        |
+| Backend (UrlService)        |
+| → Validates + shortens URL  |
+| → Saves with user ID in DB  |
 +------------------------------+
              |
              v
 +------------------------------+
-| Short URL returned & shown  |
-| to user (e.g. /r/abc123)    |
+| Returns short URL           |
+| → Display /r/abc123         |
 +------------------------------+
              |
              v
-+----------------------------+
-| User can:                 |
-|  - Load My URLs           |
-|  - Delete URL             |
-+----------------------------+
-
-     +----------------------+
-     | GET /api/url/user    |
-     | (returns paginated   |
-     |  list of URLs)       |
-     +----------------------+
-
-     +----------------------+
-     | DELETE /api/url/{id} |
-     | Validates user match |
-     | Deletes from DB      |
-     +----------------------+
-
++------------------------------+
+| User Dashboard Options:     |
+|  → Load My URLs             |
+|  → Delete a URL             |
++------------------------------+
              |
              v
-+-----------------------------+
-| Click short URL → /r/abc123|
-+-----------------------------+
++------------------------------+
+| GET /api/url/user?page=0    |
+| → Return paginated user URLs|
++------------------------------+
              |
              v
-+-----------------------------+
-| GET /r/{shortUrl} → Backend|
-| looks up and redirects     |
-+-----------------------------+
++------------------------------+
+| DELETE /api/url/{shortUrl}  |
+| → Validate ownership        |
+| → Delete from DB            |
++------------------------------+
+             |
+             v
++------------------------------+
+| Visit Short URL (/r/abc123) |
+| → Redirects to long URL     |
++------------------------------+
 
-             |
-             v
-+-----------------------------+
-| Done! User sees original   |
-| site or dashboard is updated|
-+-----------------------------+
-</details>
 
 📂 Project Structure
 swift
