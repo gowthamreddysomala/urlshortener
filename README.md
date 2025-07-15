@@ -67,6 +67,10 @@ POST	/api/url	Shorten URL (authenticated)
 GET	/api/url/user	View your shortened URLs
 GET	/r/{shortUrl}	Redirect to original URL
 
+<details> <summary>📊 <strong>Application Workflow: URL Shortener (Click to Expand)</strong></summary>
+text
+Copy
+Edit
 +------------------------+
 |      User Visits       |
 |    index.html (UI)     |
@@ -159,7 +163,7 @@ GET	/r/{shortUrl}	Redirect to original URL
 | Done! User sees original   |
 | site or dashboard is updated|
 +-----------------------------+
-
+</details>
 
 📂 Project Structure
 swift
