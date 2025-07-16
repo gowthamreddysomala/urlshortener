@@ -8,7 +8,7 @@ A simple and secure URL shortening service built using **Spring Boot**, **JWT-ba
 ## 📌 Features
 
 - ✅ User registration & login with JWT authentication  
-- 🔐 Secure endpoints via token-based access  
+- 🔐 Secure endpoints via token-based access   
 - 🔗 Shorten URLs with unique aliases  
 - 📋 View & delete shortened URLs  
 - 🚀 Redirect to original URLs  
