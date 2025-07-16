@@ -12,116 +12,58 @@
           display: flex; justify-content: center; align-items: center;
           height: 100vh;
         }
-
         .container {
           background: white;
           width: 100%;
-          max-width: 400px;
-          padding: 30px 25px;
+          max-width: 500px; /* made bigger */
+          padding: 30px; /* more padding */
           border-radius: 12px;
           box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
-
         h1 {
           text-align: center;
           color: #1f2937;
           margin-bottom: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 8px;
+          display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-
         .tabs {
-          display: flex;
-          margin-bottom: 15px;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          overflow: hidden;
+          display: flex; margin-bottom: 15px;
+          border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;
         }
-
         .tab {
-          flex: 1;
-          text-align: center;
-          padding: 10px;
-          cursor: pointer;
-          background: #f9fafb;
-          color: #6b7280;
-          font-weight: 500;
+          flex: 1; text-align: center; padding: 10px; cursor: pointer;
+          background: #f9fafb; color: #6b7280; font-weight: 500;
           transition: background 0.3s;
         }
-
-        .tab.active {
-          background: #3b82f6;
-          color: white;
-        }
-
+        .tab.active { background: #3b82f6; color: white; }
         input[type="email"], input[type="password"], input[type="text"] {
-          width: 100%;
-          padding: 12px 14px;
-          margin: 10px 0;
-          border: 1px solid #d1d5db;
-          border-radius: 8px;
-          font-size: 0.95rem;
-          outline: none;
-          transition: border 0.3s;
+          width: 100%; padding: 12px 14px; margin: 10px 0;
+          border: 1px solid #d1d5db; border-radius: 8px;
+          font-size: 0.95rem; outline: none; transition: border 0.3s;
         }
-
-        input:focus {
-          border-color: #3b82f6;
-        }
-
+        input:focus { border-color: #3b82f6; }
         button {
-          width: 100%;
-          padding: 12px;
-          background: #3b82f6;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          margin-top: 8px;
-          transition: background 0.3s;
+          width: 100%; padding: 12px;
+          background: #3b82f6; color: white; border: none; border-radius: 8px;
+          font-size: 1rem; font-weight: 600; cursor: pointer;
+          margin-top: 8px; transition: background 0.3s;
         }
-
         button:hover { background: #2563eb; }
-
         #message {
-          text-align: center;
-          font-size: 0.9rem;
-          margin: 8px 0;
-          color: #dc2626; /* default red for error */
+          text-align: center; font-size: 0.9rem; margin: 8px 0; color: #dc2626;
         }
-
         #message.success { color: #16a34a; }
-
-        #short-url-display {
-          text-align: center;
-          margin-top: 10px;
-          font-size: 0.9rem;
+        #short-url-display { text-align: center; margin: 10px 0; font-size: 0.9rem; }
+        #my-urls { margin-top: 12px; }
+        .url-item {
+          background: #f9fafb; padding: 8px 10px; border-radius: 8px;
+          border: 1px solid #e5e7eb; margin: 6px 0;
         }
-
-        ul {
-          list-style: none;
-          margin-top: 12px;
-          padding: 0;
-          max-height: 150px;
-          overflow-y: auto;
+        .url-item a { word-break: break-all; color: #3b82f6; text-decoration: none; }
+        .delete-btn {
+          background: #dc2626; color: white; border: none; padding: 4px 8px;
+          font-size: 0.8rem; border-radius: 4px; cursor: pointer; margin-top: 5px;
         }
-
-        li {
-          background: #f9fafb;
-          margin: 6px 0;
-          padding: 8px 10px;
-          border-radius: 8px;
-          font-size: 0.85rem;
-          border: 1px solid #e5e7eb;
-        }
-
-        a { color: #3b82f6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
     </style>
 </head>
 <body>
@@ -131,7 +73,6 @@
         <div id="tab-login" class="tab active" onclick="showTab('login')">Login</div>
         <div id="tab-register" class="tab" onclick="showTab('register')">Register</div>
     </div>
-
     <div id="message"></div>
 
     <form id="login-form">
@@ -146,51 +87,176 @@
         <button type="submit">Register</button>
     </form>
 
-    <form id="url-form" style="display:none;">
-        <input type="text" id="long-url" placeholder="Enter long URL" required />
-        <button type="submit">Shorten URL</button>
-        <div id="short-url-display"></div>
-        <button type="button" onclick="loadUserUrls()">My URLs</button>
-        <ul id="user-urls-list"></ul>
+    <div id="dashboard" style="display:none;">
+        <form id="url-form">
+            <input type="text" id="long-url" placeholder="Enter long URL" required />
+            <button type="submit">Shorten URL</button>
+            <div id="short-url-display"></div>
+        </form>
+        <button type="button" onclick="loadUserUrls()">Show My URLs</button>
+        <div id="my-urls"></div>
         <button type="button" onclick="logout()">Logout</button>
-    </form>
+    </div>
 </div>
 
 <script>
     const API = "http://localhost:8080/api";
-    const loginForm = document.getElementById("login-form");
-    const registerForm = document.getElementById("register-form");
-    const urlForm = document.getElementById("url-form");
-    const messageDiv = document.getElementById("message");
-    const shortUrlDisplay = document.getElementById("short-url-display");
 
     function showMessage(text, type) {
-      messageDiv.textContent = text;
-      messageDiv.className = type ? type : "";
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.className = type ? type : "";
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
     function showTab(tab) {
       document.getElementById("tab-login").classList.remove("active");
       document.getElementById("tab-register").classList.remove("active");
-
       if (tab === "login") {
         document.getElementById("tab-login").classList.add("active");
-        loginForm.style.display = "block";
-        registerForm.style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("register-form").style.display = "none";
       } else {
         document.getElementById("tab-register").classList.add("active");
-        loginForm.style.display = "none";
-        registerForm.style.display = "block";
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "block";
       }
-      urlForm.style.display = "none";
+      document.getElementById("dashboard").style.display = "none";
       showMessage("", "");
     }
 
     function showDashboard() {
-      loginForm.style.display = "none";
-      registerForm.style.display = "none";
-      urlForm.style.display = "block";
+      document.getElementById("login-form").style.display = "none";
+      document.getElementById("register-form").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
       showMessage("", "");
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (!isValidEmail(email)) {
+        showMessage("Please enter a valid email address.", "error"); return;
+      }
+      if (password.length < 4) {
+        showMessage("Password must be at least 4 characters.", "error"); return;
+      }
+      showMessage("Logging in...");
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({email, password})
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem("token", data.token);
+          showDashboard();
+        } else if (res.status === 403 || res.status === 401) {
+          showMessage("Forbidden / unauthorized. Please check your credentials.", "error");
+        } else {
+          showMessage(data.message || "Invalid credentials.", "error");
+        }
+      } catch { showMessage("Network error. Please try again.", "error"); }
+    });
+
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("reg-email").value.trim();
+      const password = document.getElementById("reg-password").value.trim();
+      if (!isValidEmail(email)) {
+        showMessage("Please enter a valid email address.", "error"); return;
+      }
+      if (password.length < 4) {
+        showMessage("Password must be at least 4 characters.", "error"); return;
+      }
+      showMessage("Registering...");
+      try {
+        const res = await fetch(`${API}/auth/register`, {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({email, password})
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("Registered successfully! Please login.", "success");
+          showTab("login");
+        } else if (res.status === 409) {
+          showMessage("Email already exists. Please login.", "error");
+        } else {
+          showMessage(data.message || "Failed to register.", "error");
+        }
+      } catch { showMessage("Network error. Please try again.", "error"); }
+    });
+
+    document.getElementById("url-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const longUrl = document.getElementById("long-url").value.trim();
+      if (!longUrl.startsWith("http")) {
+        showMessage("Please enter a valid URL starting with http/https.", "error"); return;
+      }
+      const token = localStorage.getItem("token");
+      const disp = document.getElementById("short-url-display");
+      disp.textContent = "Shortening...";
+      try {
+        const res = await fetch(`${API}/url`, {
+          method: "POST", headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
+          body: JSON.stringify({ originalUrl: longUrl })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          const shortLink = `http://localhost:8080/r/${data.shortUrl}`;
+          disp.innerHTML = `<a href="${shortLink}" target="_blank">${shortLink}</a>`;
+          loadUserUrls();
+        } else if (res.status === 403 || res.status === 401) {
+          showMessage("Forbidden / unauthorized. Please login again.", "error");
+          disp.textContent = "";
+        } else {
+          showMessage(data.message || "Failed to shorten URL.", "error");
+          disp.textContent = "";
+        }
+      } catch { showMessage("Network error.", "error"); disp.textContent = ""; }
+    });
+
+    async function loadUserUrls() {
+      const token = localStorage.getItem("token");
+      const list = document.getElementById("my-urls");
+      list.innerHTML = "Loading...";
+      try {
+        const res = await fetch(`${API}/url/user?page=0&size=20`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const urls = await res.json();
+          if (!urls.length) { list.innerHTML = "No URLs yet."; return; }
+          list.innerHTML = "";
+          urls.forEach(url => {
+            const shortLink = `${window.location.origin}/r/${url.shortUrl}`;
+            const div = document.createElement("div");
+            div.className = "url-item";
+            div.innerHTML = `
+              <div><a href="${shortLink}" target="_blank">${shortLink}</a></div>
+              <button class="delete-btn" onclick="deleteUrl('${url.id}')">Delete</button>`;
+            list.appendChild(div);
+          });
+        } else if (res.status === 403 || res.status === 401) {
+          showMessage("Unauthorized. Please login again.", "error");
+          list.innerHTML = "";
+        } else { list.innerHTML = "Failed to load URLs."; }
+      } catch { list.innerHTML = "Network error."; }
+    }
+
+    async function deleteUrl(id) {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API}/url/${id}`, {
+          method: "DELETE", headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) { loadUserUrls(); showMessage("Deleted!", "success"); }
+        else { showMessage("Failed to delete.", "error"); }
+      } catch { showMessage("Network error.", "error"); }
     }
 
     function logout() {
@@ -198,110 +264,8 @@
       showTab("login");
     }
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      showMessage("Logging in...", "");
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      try {
-        const res = await fetch(`${API}/auth/login`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem("token", data.token);
-          showDashboard();
-          showMessage("Login successful!", "success");
-        } else {
-          showMessage(data.message || "Invalid credentials", "error");
-        }
-      } catch {
-        showMessage("Network error", "error");
-      }
-    });
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      showMessage("Registering...", "");
-      const email = document.getElementById("reg-email").value.trim();
-      const password = document.getElementById("reg-password").value.trim();
-      try {
-        const res = await fetch(`${API}/auth/register`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("Registered successfully! You can login now.", "success");
-          showTab("login");
-        } else {
-          showMessage(data.message || "Email already exists", "error");
-        }
-      } catch {
-        showMessage("Network error", "error");
-      }
-    });
-
-    urlForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      shortUrlDisplay.textContent = "Loading...";
-      const longUrl = document.getElementById("long-url").value.trim();
-      const token = localStorage.getItem("token");
-      try {
-        const res = await fetch(`${API}/url`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
-          body: JSON.stringify({ originalUrl: longUrl })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          const shortLink = `${window.location.origin}/r/${data.shortUrl}`;
-          shortUrlDisplay.innerHTML = `<a href="${shortLink}" target="_blank">${shortLink}</a>`;
-        } else {
-          showMessage(data.message || "Failed to shorten URL", "error");
-          shortUrlDisplay.textContent = "";
-        }
-      } catch {
-        showMessage("Network error", "error");
-        shortUrlDisplay.textContent = "";
-      }
-    });
-
-    async function loadUserUrls() {
-      const token = localStorage.getItem("token");
-      const list = document.getElementById("user-urls-list");
-      list.innerHTML = "Loading...";
-      try {
-        const res = await fetch(`${API}/url/user?page=0&size=10`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const urls = await res.json();
-          list.innerHTML = "";
-          urls.forEach(url => {
-            const item = document.createElement("li");
-            const shortLink = `${window.location.origin}/r/${url.shortUrl}`;
-            item.innerHTML = `<strong>${url.originalUrl}</strong><br><a href="${shortLink}" target="_blank">${shortLink}</a>`;
-            list.appendChild(item);
-          });
-        } else {
-          showMessage("Failed to load URLs", "error");
-          list.innerHTML = "";
-        }
-      } catch {
-        showMessage("Network error", "error");
-        list.innerHTML = "";
-      }
-    }
-
-    if (localStorage.getItem("token")) {
-      showDashboard();
-    } else {
-      showTab("login");
-    }
+    if (localStorage.getItem("token")) showDashboard();
+    else showTab("login");
 </script>
 </body>
 </html>
