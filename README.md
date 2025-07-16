@@ -169,7 +169,7 @@ Access it at: `http://localhost:8080`
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is NOT licensed.
 
 ---
 
