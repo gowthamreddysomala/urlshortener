@@ -3,269 +3,235 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortener</title>
+    <title>🔗 URL Shortener</title>
     <style>
         body {
           margin: 0; padding: 0;
           font-family: 'Segoe UI', Tahoma, sans-serif;
-          background: #f1f5f9;
+          background: white;
           display: flex; justify-content: center; align-items: center;
           height: 100vh;
         }
         .container {
           background: white;
-          width: 100%;
-          max-width: 500px; /* made bigger */
-          padding: 30px; /* more padding */
+          width: 100%; max-width: 480px;
+          padding: 30px;
           border-radius: 12px;
-          box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
-        h1 {
-          text-align: center;
-          color: #1f2937;
-          margin-bottom: 20px;
-          display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
-        .tabs {
-          display: flex; margin-bottom: 15px;
-          border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;
-        }
-        .tab {
-          flex: 1; text-align: center; padding: 10px; cursor: pointer;
-          background: #f9fafb; color: #6b7280; font-weight: 500;
-          transition: background 0.3s;
-        }
-        .tab.active { background: #3b82f6; color: white; }
+        h1 { text-align: center; color: #1e3a8a; margin-bottom: 10px; }
+        form { display: flex; flex-direction: column; }
         input[type="email"], input[type="password"], input[type="text"] {
-          width: 100%; padding: 12px 14px; margin: 10px 0;
-          border: 1px solid #d1d5db; border-radius: 8px;
-          font-size: 0.95rem; outline: none; transition: border 0.3s;
+          padding: 12px; margin: 8px 0;
+          border: 1px solid #cbd5e1; border-radius: 8px;
+          font-size: 0.95rem;
         }
         input:focus { border-color: #3b82f6; }
         button {
-          width: 100%; padding: 12px;
-          background: #3b82f6; color: white; border: none; border-radius: 8px;
-          font-size: 1rem; font-weight: 600; cursor: pointer;
-          margin-top: 8px; transition: background 0.3s;
+          padding: 12px; margin-top: 10px;
+          background: #3b82f6; color: white; border: none;
+          border-radius: 8px; font-weight: 600;
+          cursor: pointer;
         }
         button:hover { background: #2563eb; }
+        .link {
+          text-align: center; color: #3b82f6;
+          margin-top: 12px; cursor: pointer;
+          font-size: 0.9rem;
+        }
         #message {
-          text-align: center; font-size: 0.9rem; margin: 8px 0; color: #dc2626;
+          text-align: center; margin-bottom: 10px;
+          color: #dc2626; font-size: 0.9rem;
         }
         #message.success { color: #16a34a; }
-        #short-url-display { text-align: center; margin: 10px 0; font-size: 0.9rem; }
-        #my-urls { margin-top: 12px; }
-        .url-item {
-          background: #f9fafb; padding: 8px 10px; border-radius: 8px;
-          border: 1px solid #e5e7eb; margin: 6px 0;
+        #short-url-display { text-align: center; margin-top: 10px; font-size: 0.9rem; }
+        ul { list-style: none; padding: 0; margin-top: 10px; }
+        li {
+          display: flex; justify-content: space-between; align-items: center;
+          background: #f9fafb; padding: 8px 10px;
+          border: 1px solid #e5e7eb; border-radius: 6px;
+          margin-top: 5px;
         }
-        .url-item a { word-break: break-all; color: #3b82f6; text-decoration: none; }
         .delete-btn {
-          background: #dc2626; color: white; border: none; padding: 4px 8px;
-          font-size: 0.8rem; border-radius: 4px; cursor: pointer; margin-top: 5px;
+          background: #dc2626; color: white; border: none;
+          padding: 4px 8px; border-radius: 4px; cursor: pointer;
+          font-size: 0.75rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🔗 URL Shortener</h1>
-    <div class="tabs">
-        <div id="tab-login" class="tab active" onclick="showTab('login')">Login</div>
-        <div id="tab-register" class="tab" onclick="showTab('register')">Register</div>
-    </div>
     <div id="message"></div>
 
     <form id="login-form">
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <input type="password" id="password" placeholder="Enter your password" required>
+        <h2 style="text-align:center; color:#1f2937; margin-bottom:10px;">Please Login</h2>
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
         <button type="submit">Login</button>
+        <div class="link" onclick="toggleForm('register')">Don't have an account? Register</div>
     </form>
 
-    <form id="register-form" style="display:none;">
-        <input type="email" id="reg-email" placeholder="Enter your email" required>
-        <input type="password" id="reg-password" placeholder="Enter your password" required>
+    <form id="register-form" style="display: none;">
+        <h2 style="text-align:center; color:#1f2937; margin-bottom:10px;">Register</h2>
+        <input type="email" id="reg-email" placeholder="Email" required />
+        <input type="password" id="reg-password" placeholder="Password" required />
         <button type="submit">Register</button>
+        <div class="link" onclick="toggleForm('login')">Already have an account? Login</div>
     </form>
 
-    <div id="dashboard" style="display:none;">
+    <div id="dashboard" style="display: none;">
         <form id="url-form">
             <input type="text" id="long-url" placeholder="Enter long URL" required />
-            <button type="submit">Shorten URL</button>
-            <div id="short-url-display"></div>
+            <button type="submit">Shorten</button>
         </form>
-        <button type="button" onclick="loadUserUrls()">Show My URLs</button>
-        <div id="my-urls"></div>
-        <button type="button" onclick="logout()">Logout</button>
+        <div id="short-url-display"></div>
+        <ul id="urls-list"></ul>
+        <button type="button" onclick="logout()" style="background:#ef4444; margin-top:12px;">Logout</button>
     </div>
 </div>
 
 <script>
-    const API = "http://localhost:8080/api";
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const dashboard = document.getElementById("dashboard");
+    const urlForm = document.getElementById("url-form");
+    const urlsList = document.getElementById("urls-list");
+    const shortUrlDisplay = document.getElementById("short-url-display");
+    const messageBox = document.getElementById("message");
+    const USERS_KEY = "users";
+    let currentUser = null;
 
-    function showMessage(text, type) {
-      const msg = document.getElementById("message");
-      msg.textContent = text;
-      msg.className = type ? type : "";
+    function showMessage(msg, type) {
+      messageBox.textContent = msg;
+      messageBox.className = type ? type : "";
     }
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function showTab(tab) {
-      document.getElementById("tab-login").classList.remove("active");
-      document.getElementById("tab-register").classList.remove("active");
-      if (tab === "login") {
-        document.getElementById("tab-login").classList.add("active");
-        document.getElementById("login-form").style.display = "block";
-        document.getElementById("register-form").style.display = "none";
+    function toggleForm(form) {
+      showMessage("");
+      if (form === "login") {
+        loginForm.style.display = "flex";
+        registerForm.style.display = "none";
+        dashboard.style.display = "none";
       } else {
-        document.getElementById("tab-register").classList.add("active");
-        document.getElementById("login-form").style.display = "none";
-        document.getElementById("register-form").style.display = "block";
+        loginForm.style.display = "none";
+        registerForm.style.display = "flex";
+        dashboard.style.display = "none";
       }
-      document.getElementById("dashboard").style.display = "none";
-      showMessage("", "");
     }
 
     function showDashboard() {
-      document.getElementById("login-form").style.display = "none";
-      document.getElementById("register-form").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      showMessage("", "");
+      loginForm.style.display = "none";
+      registerForm.style.display = "none";
+      dashboard.style.display = "block";
+      shortUrlDisplay.innerHTML = "";
+      loadUrls();
+      showMessage("");
     }
 
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    }
+
+    function userExists(email) {
+      return getUsers().some(u => u.email === email);
+    }
+
+    function addUser(email, password) {
+      const users = getUsers();
+      users.push({ email, password });
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function getUserUrls(email) {
+      return JSON.parse(localStorage.getItem("urls_" + email) || "[]");
+    }
+
+    function saveUserUrls(email, urls) {
+      localStorage.setItem("urls_" + email, JSON.stringify(urls));
+    }
+
+    function loadUrls() {
+      if (!currentUser) return;
+      const urls = getUserUrls(currentUser);
+      urlsList.innerHTML = "";
+      urls.forEach((url, idx) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${url.long}" target="_blank">${url.short}</a>
+          <button class="delete-btn" onclick="deleteUrl(${idx})">Delete</button>`;
+        urlsList.appendChild(li);
+      });
+    }
+
+    function deleteUrl(index) {
+      if (!currentUser) return;
+      const urls = getUserUrls(currentUser);
+      urls.splice(index, 1);
+      saveUserUrls(currentUser, urls);
+      loadUrls();
+    }
+
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      if (!isValidEmail(email)) {
-        showMessage("Please enter a valid email address.", "error"); return;
+      const password = document.getElementById("password").value;
+      const users = getUsers();
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        showMessage("User not found. Please register first.", "error");
+      } else if (user.password !== password) {
+        showMessage("Invalid credentials! Please try again.", "error");
+      } else {
+        currentUser = email;
+        localStorage.setItem("token", btoa(email+":"+password));
+        showDashboard();
+        loginForm.reset();
       }
-      if (password.length < 4) {
-        showMessage("Password must be at least 4 characters.", "error"); return;
-      }
-      showMessage("Logging in...");
-      try {
-        const res = await fetch(`${API}/auth/login`, {
-          method: "POST", headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem("token", data.token);
-          showDashboard();
-        } else if (res.status === 403 || res.status === 401) {
-          showMessage("Forbidden / unauthorized. Please check your credentials.", "error");
-        } else {
-          showMessage(data.message || "Invalid credentials.", "error");
-        }
-      } catch { showMessage("Network error. Please try again.", "error"); }
     });
 
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
+    registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const email = document.getElementById("reg-email").value.trim();
-      const password = document.getElementById("reg-password").value.trim();
-      if (!isValidEmail(email)) {
-        showMessage("Please enter a valid email address.", "error"); return;
+      const password = document.getElementById("reg-password").value;
+      if (userExists(email)) {
+        showMessage("This email is already registered, please use another account.", "error");
+      } else {
+        addUser(email, password);
+        showMessage("Registered successfully! You can now login.", "success");
+        registerForm.reset();
+        setTimeout(() => toggleForm("login"), 1000);
       }
-      if (password.length < 4) {
-        showMessage("Password must be at least 4 characters.", "error"); return;
-      }
-      showMessage("Registering...");
-      try {
-        const res = await fetch(`${API}/auth/register`, {
-          method: "POST", headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({email, password})
-        });
-        const data = await res.json();
-        if (res.ok) {
-          showMessage("Registered successfully! Please login.", "success");
-          showTab("login");
-        } else if (res.status === 409) {
-          showMessage("Email already exists. Please login.", "error");
-        } else {
-          showMessage(data.message || "Failed to register.", "error");
-        }
-      } catch { showMessage("Network error. Please try again.", "error"); }
     });
 
-    document.getElementById("url-form").addEventListener("submit", async (e) => {
+    urlForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      if (!currentUser) return;
       const longUrl = document.getElementById("long-url").value.trim();
-      if (!longUrl.startsWith("http")) {
-        showMessage("Please enter a valid URL starting with http/https.", "error"); return;
-      }
-      const token = localStorage.getItem("token");
-      const disp = document.getElementById("short-url-display");
-      disp.textContent = "Shortening...";
-      try {
-        const res = await fetch(`${API}/url`, {
-          method: "POST", headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
-          body: JSON.stringify({ originalUrl: longUrl })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          const shortLink = `http://localhost:8080/r/${data.shortUrl}`;
-          disp.innerHTML = `<a href="${shortLink}" target="_blank">${shortLink}</a>`;
-          loadUserUrls();
-        } else if (res.status === 403 || res.status === 401) {
-          showMessage("Forbidden / unauthorized. Please login again.", "error");
-          disp.textContent = "";
-        } else {
-          showMessage(data.message || "Failed to shorten URL.", "error");
-          disp.textContent = "";
-        }
-      } catch { showMessage("Network error.", "error"); disp.textContent = ""; }
+      const short = "short.ly/" + Math.random().toString(36).substring(7);
+      const urls = getUserUrls(currentUser);
+      urls.push({ long: longUrl, short });
+      saveUserUrls(currentUser, urls);
+      shortUrlDisplay.innerHTML = `<a href="${longUrl}" target="_blank">${short}</a>`;
+      loadUrls();
+      urlForm.reset();
     });
-
-    async function loadUserUrls() {
-      const token = localStorage.getItem("token");
-      const list = document.getElementById("my-urls");
-      list.innerHTML = "Loading...";
-      try {
-        const res = await fetch(`${API}/url/user?page=0&size=20`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const urls = await res.json();
-          if (!urls.length) { list.innerHTML = "No URLs yet."; return; }
-          list.innerHTML = "";
-          urls.forEach(url => {
-            const shortLink = `${window.location.origin}/r/${url.shortUrl}`;
-            const div = document.createElement("div");
-            div.className = "url-item";
-            div.innerHTML = `
-              <div><a href="${shortLink}" target="_blank">${shortLink}</a></div>
-              <button class="delete-btn" onclick="deleteUrl('${url.id}')">Delete</button>`;
-            list.appendChild(div);
-          });
-        } else if (res.status === 403 || res.status === 401) {
-          showMessage("Unauthorized. Please login again.", "error");
-          list.innerHTML = "";
-        } else { list.innerHTML = "Failed to load URLs."; }
-      } catch { list.innerHTML = "Network error."; }
-    }
-
-    async function deleteUrl(id) {
-      const token = localStorage.getItem("token");
-      try {
-        const res = await fetch(`${API}/url/${id}`, {
-          method: "DELETE", headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) { loadUserUrls(); showMessage("Deleted!", "success"); }
-        else { showMessage("Failed to delete.", "error"); }
-      } catch { showMessage("Network error.", "error"); }
-    }
 
     function logout() {
       localStorage.removeItem("token");
-      showTab("login");
+      currentUser = null;
+      urlsList.innerHTML = "";
+      shortUrlDisplay.innerHTML = "";
+      toggleForm("login");
     }
 
-    if (localStorage.getItem("token")) showDashboard();
-    else showTab("login");
+    if (localStorage.getItem("token")) {
+      const decoded = atob(localStorage.getItem("token"));
+      currentUser = decoded.split(":")[0];
+      showDashboard();
+    } else {
+      toggleForm("login");
+    }
 </script>
+
 </body>
 </html>
