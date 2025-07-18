@@ -2,240 +2,238 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Shortener</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 URL Shortener</title>
     <style>
-        :root {
-          --primary-color: #4f46e5;
-          --bg-color: #f9fafb;
-          --text-color: #111827;
-          --border-radius: 10px;
-          --transition: 0.3s ease;
-        }
-
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
-          background-color: var(--bg-color);
-          color: var(--text-color);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          padding: 20px;
-        }
-
-        .card {
-          width: 100%;
-          max-width: 400px;
+          margin: 0; padding: 0;
+          font-family: 'Segoe UI', Tahoma, sans-serif;
           background: white;
+          display: flex; justify-content: center; align-items: center;
+          height: 100vh;
+        }
+        .container {
+          background: white;
+          width: 100%; max-width: 480px;
           padding: 30px;
-          border-radius: var(--border-radius);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
-
-        h1 {
-          text-align: center;
-          margin-bottom: 20px;
+        h1 { text-align: center; color: #1e3a8a; margin-bottom: 10px; }
+        form { display: flex; flex-direction: column; }
+        input[type="email"], input[type="password"], input[type="text"] {
+          padding: 12px; margin: 8px 0;
+          border: 1px solid #cbd5e1; border-radius: 8px;
+          font-size: 0.95rem;
         }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-          width: 100%;
-          padding: 12px;
-          margin: 10px 0;
-          border: 1px solid #ccc;
-          border-radius: var(--border-radius);
-        }
-
+        input:focus { border-color: #3b82f6; }
         button {
-          width: 100%;
-          padding: 12px;
-          background-color: var(--primary-color);
-          color: white;
-          border: none;
-          border-radius: var(--border-radius);
-          font-weight: bold;
+          padding: 12px; margin-top: 10px;
+          background: #3b82f6; color: white; border: none;
+          border-radius: 8px; font-weight: 600;
           cursor: pointer;
-          transition: background var(--transition);
         }
-
-        button:hover {
-          background-color: #4338ca;
-        }
-
+        button:hover { background: #2563eb; }
         .link {
-          color: var(--primary-color);
+          text-align: center; color: #3b82f6;
+          margin-top: 12px; cursor: pointer;
           font-size: 0.9rem;
-          display: block;
-          text-align: center;
-          margin-top: 10px;
-          cursor: pointer;
         }
-
-        ul {
-          list-style: none;
-          margin-top: 20px;
+        #message {
+          text-align: center; margin-bottom: 10px;
+          color: #dc2626; font-size: 0.9rem;
         }
-
+        #message.success { color: #16a34a; }
+        #short-url-display { text-align: center; margin-top: 10px; font-size: 0.9rem; }
+        ul { list-style: none; padding: 0; margin-top: 10px; }
         li {
-          background: #f1f5f9;
-          margin: 10px 0;
-          padding: 10px;
-          border-radius: var(--border-radius);
+          display: flex; justify-content: space-between; align-items: center;
+          background: #f9fafb; padding: 8px 10px;
+          border: 1px solid #e5e7eb; border-radius: 6px;
+          margin-top: 5px;
         }
-
-        #short-url-display {
-          margin-top: 15px;
-          text-align: center;
+        .delete-btn {
+          background: #dc2626; color: white; border: none;
+          padding: 4px 8px; border-radius: 4px; cursor: pointer;
+          font-size: 0.75rem;
         }
     </style>
 </head>
 <body>
-<div class="card">
-    <h1>URL Shortener</h1>
+<div class="container">
+    <h1>🔗 URL Shortener</h1>
+    <div id="message"></div>
 
     <form id="login-form">
+        <h2 style="text-align:center; color:#1f2937; margin-bottom:10px;">Please Login</h2>
         <input type="email" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Password" required />
         <button type="submit">Login</button>
         <div class="link" onclick="toggleForm('register')">Don't have an account? Register</div>
     </form>
 
-    <form id="register-form" style="display: none">
+    <form id="register-form" style="display: none;">
+        <h2 style="text-align:center; color:#1f2937; margin-bottom:10px;">Register</h2>
         <input type="email" id="reg-email" placeholder="Email" required />
         <input type="password" id="reg-password" placeholder="Password" required />
         <button type="submit">Register</button>
         <div class="link" onclick="toggleForm('login')">Already have an account? Login</div>
     </form>
 
-    <form id="url-form" style="display: none">
-        <input type="text" id="long-url" placeholder="Enter URL" required />
-        <button type="submit">Shorten</button>
+    <div id="dashboard" style="display: none;">
+        <form id="url-form">
+            <input type="text" id="long-url" placeholder="Enter long URL" required />
+            <button type="submit">Shorten</button>
+        </form>
         <div id="short-url-display"></div>
-        <button type="button" onclick="loadUserUrls()" style="margin-top:10px">Load My URLs</button>
-        <ul id="user-urls-list"></ul>
-        <div class="link" onclick="logout()">Logout</div>
-    </form>
+        <ul id="urls-list"></ul>
+        <button type="button" onclick="logout()" style="background:#ef4444; margin-top:12px;">Logout</button>
+    </div>
 </div>
 
 <script>
-    const API = "http://localhost:8080/api";
-
     const loginForm = document.getElementById("login-form");
     const registerForm = document.getElementById("register-form");
+    const dashboard = document.getElementById("dashboard");
     const urlForm = document.getElementById("url-form");
+    const urlsList = document.getElementById("urls-list");
     const shortUrlDisplay = document.getElementById("short-url-display");
+    const messageBox = document.getElementById("message");
+    const USERS_KEY = "users";
+    let currentUser = null;
 
-    function toggleForm(type) {
-      loginForm.style.display = type === "login" ? "block" : "none";
-      registerForm.style.display = type === "register" ? "block" : "none";
-      urlForm.style.display = "none";
+    function showMessage(msg, type) {
+      messageBox.textContent = msg;
+      messageBox.className = type ? type : "";
+    }
+
+    function toggleForm(form) {
+      showMessage("");
+      if (form === "login") {
+        loginForm.style.display = "flex";
+        registerForm.style.display = "none";
+        dashboard.style.display = "none";
+      } else {
+        loginForm.style.display = "none";
+        registerForm.style.display = "flex";
+        dashboard.style.display = "none";
+      }
     }
 
     function showDashboard() {
       loginForm.style.display = "none";
       registerForm.style.display = "none";
-      urlForm.style.display = "block";
+      dashboard.style.display = "block";
+      shortUrlDisplay.innerHTML = "";
+      loadUrls();
+      showMessage("");
     }
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    }
+
+    function userExists(email) {
+      return getUsers().some(u => u.email === email);
+    }
+
+    function addUser(email, password) {
+      const users = getUsers();
+      users.push({ email, password });
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function getUserUrls(email) {
+      return JSON.parse(localStorage.getItem("urls_" + email) || "[]");
+    }
+
+    function saveUserUrls(email, urls) {
+      localStorage.setItem("urls_" + email, JSON.stringify(urls));
+    }
+
+    function loadUrls() {
+      if (!currentUser) return;
+      const urls = getUserUrls(currentUser);
+      urlsList.innerHTML = "";
+      urls.forEach((url, idx) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${url.long}" target="_blank">${url.short}</a>
+          <button class="delete-btn" onclick="deleteUrl(${idx})">Delete</button>`;
+        urlsList.appendChild(li);
+      });
+    }
+
+    function deleteUrl(index) {
+      if (!currentUser) return;
+      const urls = getUserUrls(currentUser);
+      urls.splice(index, 1);
+      saveUserUrls(currentUser, urls);
+      loadUrls();
+    }
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const users = getUsers();
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        showMessage("User not found. Please register first.", "error");
+      } else if (user.password !== password) {
+        showMessage("Invalid credentials! Please try again.", "error");
+      } else {
+        currentUser = email;
+        localStorage.setItem("token", btoa(email+":"+password));
+        showDashboard();
+        showMessage("✅ Login successful!", "success");  // <-- add this line
+        loginForm.reset();
+}
+
+    });
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("reg-email").value.trim();
+      const password = document.getElementById("reg-password").value;
+      if (userExists(email)) {
+        showMessage("This email is already registered, please use another account.", "error");
+      } else {
+        addUser(email, password);
+        showMessage("✅ Registered successfully! You can now login.", "success");
+        registerForm.reset();
+        setTimeout(() => toggleForm("login"), 1000);
+      }
+    });
+
+    urlForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+      const longUrl = document.getElementById("long-url").value.trim();
+      const short = "short.ly/" + Math.random().toString(36).substring(7);
+      const urls = getUserUrls(currentUser);
+      urls.push({ long: longUrl, short });
+      saveUserUrls(currentUser, urls);
+      shortUrlDisplay.innerHTML = `<a href="${longUrl}" target="_blank">${short}</a>`;
+      loadUrls();
+      urlForm.reset();
+    });
 
     function logout() {
       localStorage.removeItem("token");
+      currentUser = null;
+      urlsList.innerHTML = "";
+      shortUrlDisplay.innerHTML = "";
       toggleForm("login");
     }
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem("token", data.token);
-        showDashboard();
-      } else {
-        alert("Login failed");
-      }
-    });
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("reg-email").value;
-      const password = document.getElementById("reg-password").value;
-
-      const res = await fetch(`${API}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem("token", data.token);
-        showDashboard();
-      } else {
-        alert("Registration failed");
-      }
-    });
-
-    urlForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const longUrl = document.getElementById("long-url").value;
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`${API}/url`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ originalUrl: longUrl }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        shortUrlDisplay.innerHTML = `<a href='/r/${data.shortUrl}' target='_blank'>${window.location.origin}/r/${data.shortUrl}</a>`;
-      } else {
-        alert("Failed to shorten URL");
-      }
-    });
-
-    async function loadUserUrls() {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/url/user?page=0&size=10`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.ok) {
-        const urls = await res.json();
-        const list = document.getElementById("user-urls-list");
-        list.innerHTML = "";
-        urls.forEach((url) => {
-          const item = document.createElement("li");
-          item.innerHTML = `<strong>${url.originalUrl}</strong><br><a href='/r/${url.shortUrl}' target='_blank'>${window.location.origin}/r/${url.shortUrl}</a>`;
-          list.appendChild(item);
-        });
-      } else {
-        alert("Failed to load URLs");
-      }
-    }
-
-    // Auto login if token is present
     if (localStorage.getItem("token")) {
+      const decoded = atob(localStorage.getItem("token"));
+      currentUser = decoded.split(":")[0];
       showDashboard();
+    } else {
+      toggleForm("login");
     }
 </script>
+
 </body>
 </html>
