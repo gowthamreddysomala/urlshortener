@@ -185,8 +185,10 @@
         currentUser = email;
         localStorage.setItem("token", btoa(email+":"+password));
         showDashboard();
+        showMessage("✅ Login successful!", "success");  // <-- add this line
         loginForm.reset();
-      }
+}
+
     });
 
     registerForm.addEventListener("submit", (e) => {
@@ -197,7 +199,7 @@
         showMessage("This email is already registered, please use another account.", "error");
       } else {
         addUser(email, password);
-        showMessage("Registered successfully! You can now login.", "success");
+        showMessage("✅ Registered successfully! You can now login.", "success");
         registerForm.reset();
         setTimeout(() => toggleForm("login"), 1000);
       }
