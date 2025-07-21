@@ -185,7 +185,7 @@
         currentUser = email;
         localStorage.setItem("token", btoa(email+":"+password));
         showDashboard();
-        showMessage("✅ Login successful!", "success");  // <-- add this line
+        showMessage("✅ Login successful!", "success");  
         loginForm.reset();
 }
 
