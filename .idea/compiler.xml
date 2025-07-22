@@ -18,10 +18,14 @@
         <module name="urlshortener" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="urlshortener (1)" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="urlshortener" options="-parameters" />
+      <module name="urlshortener (1)" options="-parameters" />
     </option>
   </component>
 </project>

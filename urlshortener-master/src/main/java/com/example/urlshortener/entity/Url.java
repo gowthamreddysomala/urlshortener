@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "urls")
+@Table(name = "urled")
 public class Url {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
