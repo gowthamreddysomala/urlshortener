@@ -27,10 +27,10 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
 
 
-    @Bean
+   /* @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         return new JdbcUserDetailsManager(dataSource);
-    }
+    }*/
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
