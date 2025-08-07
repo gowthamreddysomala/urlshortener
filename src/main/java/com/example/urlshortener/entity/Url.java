@@ -30,4 +30,15 @@ public class Url {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-} 
+
+    @Override
+    public String toString() {
+        return "Url{" +
+                "id=" + id +
+                ", originalUrl='" + originalUrl + '\'' +
+                ", shortUrl='" + shortUrl + '\'' +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                '}';
+    }
+}
