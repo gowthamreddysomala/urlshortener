@@ -16,7 +16,8 @@
 # Step 1: Build stage (Maven + JDK)
 FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY . .
+COPY backend/pom.xml .
+COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Step 2: Runtime stage (only JDK, lightweight)
