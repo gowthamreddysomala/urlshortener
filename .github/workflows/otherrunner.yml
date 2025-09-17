@@ -1,0 +1,27 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Run every minute
+    - cron: "* * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide randomly whether to ping
+        run: |
+          # Pick a random minute between 0–10
+          TARGET=$((RANDOM % 11))
+          NOW=$(date +\%M)
+          NOW=$((10#$NOW % 11))
+
+          echo "Target minute: $TARGET | Current minute (mod 11): $NOW"
+
+          if [ "$NOW" -eq "$TARGET" ]; then
+            echo "Time matches! Pinging service..."
+            curl -s -o /dev/null -w "%{http_code}" https://urlshortener-vk07.onrender.com/active
+          else
+            echo "Skipping this minute."
+          fi
