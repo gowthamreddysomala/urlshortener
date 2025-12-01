@@ -26,7 +26,7 @@ public class UrlController {
 
     @PostMapping
     public UrlResponse create(@RequestBody UrlCreateRequest request,
-                              @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
         Url url = urlService.createShortUrl(request.getOriginalUrl(), user);
         return new UrlResponse(url.getOriginalUrl(), url.getShortUrl());
@@ -41,8 +41,7 @@ public class UrlController {
     public ResponseEntity<List<UrlResponse>> getUserUrls(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Authentication authentication
-    ) {
+            Authentication authentication) {
         String email = authentication.getName();
         Page<Url> urls = urlService.getUserUrls(email, page, size);
 
@@ -51,6 +50,14 @@ public class UrlController {
                 .toList();
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{shortUrl}")
+    public ResponseEntity<Void> deleteUrl(@PathVariable String shortUrl,
+            Authentication authentication) {
+        String email = authentication.getName();
+        urlService.deleteUrl(shortUrl, email);
+        return ResponseEntity.ok().build();
     }
 
 }

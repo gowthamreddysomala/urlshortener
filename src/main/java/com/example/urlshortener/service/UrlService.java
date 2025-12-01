@@ -41,7 +41,6 @@ public class UrlService {
         return urlRepository.findByUserEmail(email, pageable);
     }
 
-
     public Url getByShortUrl(String shortUrl) {
         return urlRepository.findByShortUrl(shortUrl)
                 .orElse(null);
@@ -51,5 +50,16 @@ public class UrlService {
         return urlRepository.findByShortUrl(shortUrl)
                 .orElseThrow(() -> new RuntimeException("Short URL not found"))
                 .getOriginalUrl();
+    }
+
+    public void deleteUrl(String shortUrl, String userEmail) {
+        Url url = urlRepository.findByShortUrl(shortUrl)
+                .orElseThrow(() -> new RuntimeException("Short URL not found"));
+
+        if (!url.getUser().getEmail().equals(userEmail)) {
+            throw new RuntimeException("Unauthorized to delete this URL");
+        }
+
+        urlRepository.delete(url);
     }
 }

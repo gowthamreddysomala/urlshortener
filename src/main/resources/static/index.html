@@ -1,415 +1,1072 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>URL Shortener by Gowtham Reddy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkSnap - Professional URL Shortener</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&family=Work+Sans:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-          /* Light theme defaults */
-          --bg: #f7f8fc;
-          --bg-2: rgba(0,0,0,0.06);
-          --card: rgba(255,255,255,0.9);
-          --text: #111827;
-          --muted: #6b7280;
-          --brand: #7c3aed;
-          --brand-2: #22d3ee;
-          --accent: #22c55e;
-          --danger: #ef4444;
-          --ring: rgba(124,58,237,0.25);
-          --radius: 14px;
-          --shadow: 0 10px 30px rgba(0,0,0,0.10);
+            /* Portfolio Theme Colors */
+            --bg-dark: #111111;
+            --text-primary: rgba(255, 255, 255, 0.87);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-green: #00ff88;
+            --accent-cyan: #00ffff;
+            --button-bg: rgba(255, 255, 255, 0.1);
+            --button-hover: rgba(255, 255, 255, 0.15);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.05);
         }
 
-        /* Dark theme overrides */
-        .dark {
-          --bg: #0b1020;
-          --bg-2: rgba(255,255,255,0.06);
-          --card: rgba(13,17,23,0.6);
-          --text: #e5e7eb;
-          --muted: #9aa3b2;
-          --ring: rgba(124,58,237,0.45);
-          --shadow: 0 10px 30px rgba(0,0,0,0.35);
-        }
-
-        * { box-sizing: border-box; }
-        html, body { height: 100%; }
         body {
-          margin: 0;
-          font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
-          color: var(--text);
-          /* Light background */
-          background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent 60%),
-                      radial-gradient(1000px 500px at 90% 20%, rgba(34,211,238,0.10), transparent 60%),
-                      linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
-          display: grid;
-          grid-template-rows: auto 1fr auto;
-          min-height: 100vh;
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Dark background */
-        .dark body {
-          background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.25), transparent 60%),
-                      radial-gradient(1000px 500px at 90% 20%, rgba(34,211,238,0.2), transparent 60%),
-                      linear-gradient(180deg, #0b1020 0%, #0a0f1e 100%);
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
-        header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 20px 28px;
+        /* Cursor Particle Trail */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 9999;
+            animation: particleFade 0.8s ease-out forwards;
         }
 
-        .brand {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          font-weight: 800;
-          letter-spacing: 0.2px;
-          user-select: none;
+        @keyframes particleFade {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0) translateY(-20px);
+            }
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
         }
 
         .logo {
-          width: 36px; height: 36px;
-          display: grid; place-items: center;
-          border-radius: 10px;
-          background: linear-gradient(135deg, var(--brand), var(--brand-2));
-          box-shadow: inset 0 -6px 14px rgba(255,255,255,0.06), inset 0 6px 20px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
         }
-        .logo svg { filter: drop-shadow(0 4px 10px rgba(34,211,238,0.35)); }
+
+        .logo-icon {
+            font-size: 1.75rem;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .plan-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: var(--button-bg);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
 
         .theme-toggle {
-          position: relative;
-          display: inline-flex; align-items: center; justify-content: center;
-          width: 52px; height: 32px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
-          background: var(--bg-2);
-          color: var(--text);
-          cursor: pointer;
-          box-shadow: var(--shadow);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--button-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
         }
 
-        main { display: grid; place-items: center; padding: 20px; }
+        .theme-toggle:hover {
+            background: var(--button-hover);
+            border-color: var(--accent-green);
+        }
 
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-green);
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        /* Cards */
         .card {
-          width: 100%; max-width: 980px;
-          background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.72));
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(0,0,0,0.06);
-          border-radius: var(--radius);
-          box-shadow: var(--shadow);
-          overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
         }
 
-        /* Dark card surface */
-        .dark .card {
-          background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-          border: 1px solid rgba(255,255,255,0.08);
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-green);
         }
 
-        .card-inner { display: grid; grid-template-columns: 1.2fr 1fr; }
-        @media (max-width: 900px) { .card-inner { grid-template-columns: 1fr; } }
-
-        .hero {
-          padding: 36px 36px 16px 36px;
-          border-right: 1px solid rgba(255,255,255,0.06);
-        }
-        @media (max-width: 900px) { .hero { border-right: none; } }
-
-        h1 { font-size: 28px; margin: 0 0 12px; }
-        p.muted { color: var(--muted); margin: 0 0 24px; }
-
-        .row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-        .stack { display: grid; gap: 12px; }
-        .stack-lg { display: grid; gap: 16px; }
-
-        input[type="text"], input[type="email"], input[type="password"] {
-          width: 100%; padding: 14px 14px; border-radius: 12px;
-          background: rgba(0,0,0,0.04); color: var(--text);
-          border: 1px solid rgba(0,0,0,0.08);
-          outline: none; transition: box-shadow .2s ease, border-color .2s ease;
-        }
-        input:focus { box-shadow: 0 0 0 4px var(--ring); border-color: var(--brand); }
-
-        .dark input[type="text"], .dark input[type="email"], .dark input[type="password"] {
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.1);
+        .card-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
         }
 
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
         .btn {
-          padding: 12px 16px; border-radius: 12px;
-          border: 1px solid rgba(255,255,255,0.12);
-          background: linear-gradient(180deg, rgba(124,58,237,0.95), rgba(124,58,237,0.75));
-          color: #fff; font-weight: 700; letter-spacing: .2px;
-          cursor: pointer; box-shadow: var(--shadow);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Work Sans', sans-serif;
+            background: var(--button-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-green);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .btn.secondary { background: rgba(0,0,0,0.06); color: var(--text); }
-        .btn.ghost { background: transparent; border-color: rgba(0,0,0,0.08); }
-        .btn:disabled { opacity: .6; cursor: not-allowed; }
 
-        .dark .btn.secondary { background: rgba(255,255,255,0.06); }
-        .dark .btn.ghost { border-color: rgba(255,255,255,0.08); }
-
-        .pill {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 8px 10px; border-radius: 999px;
-          background: rgba(34,197,94,0.12); color: #86efac; font-weight: 600; font-size: 12px;
-          border: 1px solid rgba(34,197,94,0.2);
+        .btn:hover {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
         }
 
-        .list { padding: 16px; }
-        .item {
-          padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
-          background: rgba(0,0,0,0.03);
-          display: grid; gap: 8px;
+        .btn:active {
+            transform: translateY(0);
         }
-        .dark .item { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); }
-        .item + .item { margin-top: 10px; }
-        .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .muted-link { color: var(--muted); text-decoration: none; }
 
-        .tabs { display: inline-flex; background: rgba(0,0,0,0.06); padding: 4px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); }
-        .tab { padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--muted); }
-        .tab.active { background: rgba(0,0,0,0.08); color: var(--text); }
-        .dark .tabs { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08); }
-        .dark .tab.active { background: rgba(255,255,255,0.12); }
+        .btn-secondary {
+            border-color: var(--border-color);
+        }
 
+        .btn-secondary:hover {
+            background: var(--button-hover);
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger {
+            border-color: #ff4444;
+        }
+
+        .btn-danger:hover {
+            background: #ff4444;
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 68, 68, 0.3);
+        }
+
+        /* Link */
+        .link {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .link a {
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .link a:hover {
+            color: var(--accent-cyan);
+            text-decoration: underline;
+        }
+
+        /* Auth */
+        .auth-container {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* User Bar */
+        .user-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-email {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .user-plan {
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        /* Result */
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 6px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-content {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .result-url {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* URL List */
+        .url-list {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .url-item {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .url-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-green);
+            transform: translateX(5px);
+        }
+
+        .url-original {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            word-break: break-all;
+        }
+
+        .url-short {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .url-short a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .url-short a:hover {
+            color: var(--accent-green);
+            text-decoration: underline;
+        }
+
+        .url-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Empty */
+        .empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 0.875rem;
+        }
+
+        /* Toast */
         .toast {
-          position: fixed; right: 20px; bottom: 20px; min-width: 220px;
-          background: rgba(17,24,39,0.9); border: 1px solid rgba(255,255,255,0.08);
-          color: #fff; padding: 12px 14px; border-radius: 12px; box-shadow: var(--shadow);
-          transform: translateY(20px); opacity: 0; transition: .25s ease;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--accent-green);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(10px);
         }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { border-color: rgba(34,197,94,0.4); }
-        .toast.error { border-color: rgba(239,68,68,0.4); }
 
-        footer { padding: 18px; text-align: center; color: var(--muted); font-size: 12px; }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .toast.error {
+            border-left: 3px solid #ff4444;
+            border-color: #ff4444;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Quick Stats */
+        .quick-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .quick-stat:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-green);
+        }
+
+        .quick-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .quick-stat-value {
+            font-weight: 700;
+            color: var(--accent-green);
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .toast {
+                left: 1rem;
+                right: 1rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🔗</span>
+                <span>LINKSNAP</span>
+            </div>
+            <div class="header-nav">
+                <div class="plan-badge" id="user-plan-badge" style="display: none;">Pro</div>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-links">0</div>
+                <div class="stat-label">Total Links</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-clicks">—</div>
+                <div class="stat-label">Total Clicks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-links">0</div>
+                <div class="stat-label">Active Links</div>
+            </div>
+        </div>
+
+        <!-- Auth Section -->
+        <div class="auth-container view active" id="auth-section">
+            <!-- Login -->
+            <div class="card" id="login-card">
+                <h2 class="card-title">SIGN IN</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn">
+                        <span id="login-btn-text">Sign In</span>
+                    </button>
+                </form>
+                <div class="link">
+                    Don't have an account? <a onclick="showRegister()">Create one</a>
+                </div>
+            </div>
+
+            <!-- Register -->
+            <div class="card" id="register-card" style="display: none;">
+                <h2 class="card-title">CREATE ACCOUNT</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="At least 6 characters" required
+                            minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-plan">Choose Plan</label>
+                        <select id="register-plan">
+                            <option value="basic">Basic - Free</option>
+                            <option value="pro">Pro - $9/month</option>
+                            <option value="premium">Premium - $19/month</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">
+                        <span id="register-btn-text">Create Account</span>
+                    </button>
+                </form>
+                <div class="link">
+                    Already have an account? <a onclick="showLogin()">Sign in</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="view" id="dashboard">
+            <div class="user-bar">
+                <div class="user-info">
+                    <div class="avatar" id="avatar">U</div>
+                    <div class="user-details">
+                        <div class="user-email" id="user-email">user@example.com</div>
+                        <div class="user-plan" id="user-plan-text">Pro Member</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="grid grid-2">
+                <!-- Shorten URL -->
+                <div class="card">
+                    <h2 class="card-title">SHORTEN URL</h2>
+                    <form id="url-form">
+                        <div class="form-group">
+                            <label for="long-url">Long URL</label>
+                            <input type="url" id="long-url" placeholder="https://example.com/very/long/url" required>
+                        </div>
+                        <button type="submit" class="btn">
+                            <span id="shorten-btn-text">Shorten</span>
+                        </button>
+                    </form>
+
+                    <div id="url-result" style="display: none;"></div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h2 class="card-title">QUICK STATS</h2>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="quick-stat">
+                            <span class="quick-stat-label">Your Links</span>
+                            <span class="quick-stat-value" id="user-links">0</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-label">This Month</span>
+                            <span class="quick-stat-value" id="month-links">0</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-label">Today</span>
+                            <span class="quick-stat-value" id="today-links">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- URL List -->
+            <div class="card" style="margin-top: 2rem;">
+                <h2 class="card-title">YOUR LINKS</h2>
+                <div id="url-list"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-      const API = '/api';
+        const API = window.location.origin + '/api';
+        let userPlan = 'basic';
 
-      function $(q) { return document.querySelector(q); }
-      function el(tag, cls) { const e = document.createElement(tag); if (cls) e.className = cls; return e; }
+        // Particle Trail Effect
+        const colors = ['#00ff88', '#00ffff', '#00ff88', '#00ffff', '#00ff88'];
+        let lastParticleTime = 0;
 
-      function toast(message, type='success', timeout=2400) {
-        const t = el('div', `toast ${type}`); t.textContent = message; document.body.appendChild(t);
-        requestAnimationFrame(() => t.classList.add('show'));
-        setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 250); }, timeout);
-      }
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastParticleTime < 30) return;
+            lastParticleTime = now;
 
-      function normalizeUrl(value) {
-        if (!/^https?:\/\//i.test(value)) { return 'https://' + value; }
-        return value;
-      }
-
-      async function api(path, opts={}) {
-        const token = localStorage.getItem('token');
-        const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        const res = await fetch(`${API}${path}`, Object.assign({}, opts, { headers }));
-        if (!res.ok) throw res; return res;
-      }
-
-      function signOut() { localStorage.removeItem('token'); showAuth(); toast('Signed out', 'success'); }
-
-      function showAuth() {
-        $('#auth-pane').style.display = 'block';
-        $('#app-pane').style.display = 'none';
-      }
-      function showApp() {
-        $('#auth-pane').style.display = 'none';
-        $('#app-pane').style.display = 'block';
-        resetList();
-        loadPage();
-      }
-
-      function applyTheme(theme) {
-        const isDark = theme === 'dark';
-        document.documentElement.classList.toggle('dark', isDark);
-        const btn = document.querySelector('.theme-toggle');
-        if (btn) btn.textContent = isDark ? '☀' : '☾';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      }
-
-      function toggleTheme() {
-        const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-        applyTheme(next);
-      }
-
-      let page = 0, size = 10, loading = false, reachedEnd = false;
-      function resetList() { page = 0; reachedEnd = false; $('#list').innerHTML = ''; $('#load-more').disabled = false; }
-      async function loadPage() {
-        if (loading || reachedEnd) return; loading = true; $('#load-more').disabled = true;
-        try {
-          const res = await api(`/url/user?page=${page}&size=${size}`);
-          const data = await res.json();
-          renderList(data);
-          if (data.length < size) { reachedEnd = true; $('#load-more').disabled = true; } else { page += 1; $('#load-more').disabled = false; }
-          if (page === 0 && data.length === 0) toast('No URLs yet. Create your first!', 'success');
-        } catch (e) { toast('Failed to load URLs', 'error'); }
-        finally { loading = false; }
-      }
-
-      function renderList(items) {
-        const ul = $('#list');
-        items.forEach((u) => {
-          const full = `${window.location.origin}/r/${u.shortUrl}`;
-          const li = el('div', 'item');
-          const a = el('a', 'muted-link'); a.href = full; a.target = '_blank'; a.textContent = full;
-          li.innerHTML = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span class="pill">short</span>
-            <span style="word-break:break-all">${u.originalUrl}</span>
-          </div>`;
-          const act = el('div', 'item-actions');
-          const open = el('a', 'btn secondary'); open.href = full; open.target = '_blank'; open.textContent = 'Open';
-          const copy = el('button', 'btn ghost'); copy.type = 'button'; copy.textContent = 'Copy link';
-          copy.onclick = async () => { await navigator.clipboard.writeText(full); toast('Copied!'); };
-          const copyCode = el('button', 'btn ghost'); copyCode.type = 'button'; copyCode.textContent = 'Copy code';
-          copyCode.onclick = async () => { await navigator.clipboard.writeText(u.shortUrl); toast('Code copied!'); };
-          const linkWrap = el('div'); linkWrap.appendChild(a);
-          act.appendChild(open); act.appendChild(copy); act.appendChild(copyCode); act.appendChild(linkWrap);
-          li.appendChild(act);
-          ul.appendChild(li);
+            createParticle(e.clientX, e.clientY);
         });
-      }
 
-      async function login(email, password) {
-        const res = await fetch(`${API}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-        if (!res.ok) throw res; const data = await res.json(); localStorage.setItem('token', data.token);
-      }
-      async function register(email, password) {
-        const res = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-        if (!res.ok) throw res; const data = await res.json(); localStorage.setItem('token', data.token);
-      }
-      async function createShort(originalUrl) {
-        const res = await api('/url', { method: 'POST', body: JSON.stringify({ originalUrl }) });
-        const data = await res.json(); return data;
-      }
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
 
-      window.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        applyTheme(savedTheme);
+            const size = Math.random() * 6 + 3;
+            const color = colors[Math.floor(Math.random() * colors.length)];
 
-        // Tabs
-        document.querySelectorAll('.tab').forEach(tab => {
-          tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            const mode = tab.dataset.mode;
-            if (mode === 'login') { $('#login-panel').style.display = 'grid'; $('#register-panel').style.display = 'none'; }
-            else { $('#login-panel').style.display = 'none'; $('#register-panel').style.display = 'grid'; }
-          });
-        });
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.background = color;
+            particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+
+            document.body.appendChild(particle);
+
+            setTimeout(() => particle.remove(), 800);
+        }
+
+        // Theme toggle (placeholder)
+        function toggleTheme() {
+            showToast('Dark theme active');
+        }
+
+        // Update plan badge
+        function updatePlanBadge(plan) {
+            const badge = document.getElementById('user-plan-badge');
+            badge.textContent = plan.toUpperCase();
+            badge.style.display = 'block';
+
+            document.getElementById('user-plan-text').textContent =
+                plan.charAt(0).toUpperCase() + plan.slice(1) + ' Member';
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Auth
+        function showLogin() {
+            document.getElementById('login-card').style.display = 'block';
+            document.getElementById('register-card').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('login-card').style.display = 'none';
+            document.getElementById('register-card').style.display = 'block';
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-section').classList.remove('active');
+            document.getElementById('dashboard').classList.add('active');
+            const email = localStorage.getItem('userEmail');
+            document.getElementById('user-email').textContent = email;
+            document.getElementById('avatar').textContent = email.charAt(0).toUpperCase();
+
+            userPlan = localStorage.getItem('userPlan') || 'basic';
+            updatePlanBadge(userPlan);
+            loadUserUrls();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userPlan');
+            document.getElementById('auth-section').classList.add('active');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('user-plan-badge').style.display = 'none';
+            showLogin();
+            showToast('Logged out successfully');
+        }
 
         // Login
-        $('#login').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const email = $('#login-email').value.trim(); const password = $('#login-password').value;
-          try { await login(email, password); toast('Welcome back!', 'success'); showApp(); }
-          catch { toast('Invalid credentials', 'error'); }
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn-text');
+            btn.innerHTML = '<span class="spinner"></span> Signing in...';
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userPlan', 'pro');
+                    showToast('Welcome back!');
+                    showDashboard();
+                } else {
+                    showToast('Invalid credentials', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.textContent = 'Sign In';
+            }
         });
 
         // Register
-        $('#register').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const email = $('#reg-email').value.trim(); const password = $('#reg-password').value;
-          try { await register(email, password); toast('Account created', 'success'); showApp(); }
-          catch { toast('Registration failed', 'error'); }
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('register-btn-text');
+            btn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const plan = document.getElementById('register-plan').value;
+
+            try {
+                const res = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userPlan', plan);
+                    showToast('Account created successfully!');
+                    showDashboard();
+                } else {
+                    showToast('Registration failed', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.textContent = 'Create Account';
+            }
         });
 
-        // Shorten form
-        $('#shorten').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const raw = $('#long-url').value.trim(); if (!raw) return;
-          const normalized = normalizeUrl(raw);
-          $('#shorten-btn').disabled = true;
-          try {
-            const data = await createShort(normalized);
-            const full = `${window.location.origin}/r/${data.shortUrl}`;
-            $('#result').innerHTML = `<div class="stack-lg"><div><span class="pill">generated</span></div><div class="row"><input type="text" value="${full}" readonly /><button type="button" class="btn secondary" id="copy-btn">Copy</button></div><div class="item-actions"><a class="btn" target="_blank" href="${full}">Open link</a><button type="button" class="btn ghost" id="copy-code">Copy code</button></div></div>`;
-            $('#copy-btn').onclick = async () => { await navigator.clipboard.writeText(full); toast('Copied link'); };
-            $('#copy-code').onclick = async () => { await navigator.clipboard.writeText(data.shortUrl); toast('Code copied'); };
-            toast('Short URL created', 'success');
-            resetList(); page = 0; loadPage();
-          } catch { toast('Failed to shorten URL', 'error'); }
-          finally { $('#shorten-btn').disabled = false; }
+        // Shorten URL
+        document.getElementById('url-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('shorten-btn-text');
+            btn.innerHTML = '<span class="spinner"></span> Shortening...';
+
+            const longUrl = document.getElementById('long-url').value;
+            const token = localStorage.getItem('token');
+
+            try {
+                const res = await fetch(`${API}/url`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ originalUrl: longUrl })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const shortUrl = `${window.location.origin}/r/${data.shortUrl}`;
+
+                    const resultDiv = document.getElementById('url-result');
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <div class="result-label">Shortened URL</div>
+                            <div class="result-content">
+                                <div class="result-url">${shortUrl}</div>
+                                <button class="btn btn-secondary btn-sm" onclick="copyUrl('${shortUrl}')" style="width: auto;">Copy</button>
+                            </div>
+                        </div>
+                    `;
+                    resultDiv.style.display = 'block';
+
+                    document.getElementById('long-url').value = '';
+                    showToast('URL shortened successfully!');
+                    loadUserUrls();
+                } else {
+                    showToast('Failed to shorten URL', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            } finally {
+                btn.textContent = 'Shorten';
+            }
         });
 
-        if (localStorage.getItem('token')) { showApp(); } else { showAuth(); }
-      });
+        // Copy URL
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        // Load URLs
+        async function loadUserUrls() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API}/url/user?page=0&size=100`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const urls = await res.json();
+
+                    // Update stats
+                    document.getElementById('total-links').textContent = urls.length;
+                    document.getElementById('active-links').textContent = urls.length;
+                    document.getElementById('user-links').textContent = urls.length;
+                    document.getElementById('month-links').textContent = urls.length;
+                    document.getElementById('today-links').textContent = urls.length;
+
+                    const listDiv = document.getElementById('url-list');
+
+                    if (urls.length === 0) {
+                        listDiv.innerHTML = `
+                            <div class="empty">
+                                <div class="empty-icon">🔗</div>
+                                <div class="empty-text">No URLs yet. Create your first short link!</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    listDiv.innerHTML = urls.map(url => `
+                        <div class="url-item">
+                            <div class="url-original">${url.originalUrl}</div>
+                            <div class="url-short">
+                                <a href="/r/${url.shortUrl}" target="_blank">${window.location.origin}/r/${url.shortUrl}</a>
+                            </div>
+                            <div class="url-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="copyUrl('${window.location.origin}/r/${url.shortUrl}')">Copy</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteUrl('${url.shortUrl}')">Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                showToast('Failed to load URLs', 'error');
+            }
+        }
+
+        // Delete URL
+        async function deleteUrl(shortUrl) {
+            if (!confirm('Are you sure you want to delete this URL?')) return;
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API}/url/${shortUrl}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    showToast('URL deleted successfully');
+                    loadUserUrls();
+                } else {
+                    showToast('Failed to delete URL', 'error');
+                }
+            } catch (error) {
+                showToast('Connection error', 'error');
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('token')) {
+                showDashboard();
+            }
+        });
     </script>
-</head>
-<body>
-  <header>
-    <div class="brand">
-      <div class="logo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M14.5 7l4.5 5-4.5 5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-     URL Shortener by Gowtham Reddy
-    </div>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☾</button>
-  </header>
-
-  <main>
-    <div class="card">
-      <div class="card-inner">
-        <section class="hero">
-          <h1>Shorten links in seconds</h1>
-          <p class="muted">Paste any long URL to get a clean, shareable short link. Manage your links with ease.</p>
-          <div id="auth-pane">
-            <div class="tabs" style="margin: 14px 0 18px;">
-              <div class="tab active" data-mode="login">Login</div>
-              <div class="tab" data-mode="register">Register</div>
-            </div>
-            <div id="login-panel" class="stack" style="display: grid;">
-              <form id="login" class="stack">
-                <input id="login-email" type="email" placeholder="Email" required />
-                <input id="login-password" type="password" placeholder="Password" required />
-                <button id="login-btn" class="btn" type="submit">Sign in</button>
-              </form>
-            </div>
-            <div id="register-panel" class="stack" style="display: none;">
-              <form id="register" class="stack">
-                <input id="reg-email" type="email" placeholder="Email" required />
-                <input id="reg-password" type="password" placeholder="Password" required />
-                <button id="register-btn" class="btn" type="submit">Create account</button>
-              </form>
-            </div>
-          </div>
-
-          <div id="app-pane" style="display:none">
-            <form id="shorten" class="row">
-              <input id="long-url" type="text" placeholder="Paste a long URL (https://...)" required />
-              <button id="shorten-btn" class="btn" type="submit">Shorten</button>
-            </form>
-            <div id="result" style="margin-top: 14px;"></div>
-            <div class="item-actions" style="margin-top: 14px;">
-              <button class="btn secondary" type="button" onclick="resetList(); loadPage();">Refresh</button>
-              <button class="btn ghost" type="button" onclick="signOut()">Logout</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="list">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <div style="font-weight:700;">Your Links</div>
-            <div style="color:var(--muted);font-size:12px">Page size: 10</div>
-          </div>
-          <div id="list"></div>
-          <div style="display:flex;justify-content:center;margin-top:12px;">
-            <button id="load-more" class="btn secondary" type="button" onclick="loadPage()">Load more</button>
-          </div>
-        </section>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    Built by Gowtham Reddy · Redirects powered by <strong>/r/&lt;code&gt;</strong>
-  </footer>
 </body>
+
 </html>
